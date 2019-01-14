@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xzc.manager.dao.RoleDAO" >
+    
+    <insert id="insertRole">
+    	insert into role(name) values(#{name})
+    </insert>
+    
+    <delete id="deleteRoleById">
+    	delete from role where id=#{id}
+    </delete>
+    
+    <delete id="deleteRoles">
+    	delete from role where id in
+    	<foreach collection="roleids" item="roleid" open="(" close=")" separator=",">
+    		#{roleid}
+    	</foreach>
+    </delete>
+    
+    <select id="pageQueryData" resultType="com.xzc.common.bean.Role">
+        select
+            *
+        from role
+        <where>
+            <if test="queryText != null">
+            and name like concat('%', #{queryText}, '%')
+            </if>
+        </where>
+        limit #{start}, #{size}
+    </select>
+    
+    <select id="pageQueryCount" resultType="int">
+        select
+            count(*)
+        from role
+        <where>
+            <if test="queryText != null">
+            and name like concat('%', #{queryText}, '%')
+            </if>
+        </where>
+    </select>
+    
+    <insert id="insertRolePermission">
+        insert into role_permission (roleid, permissionid) values 
+        <foreach collection="permissionids" item="permissionid" separator=",">
+        ( #{roleid}, #{permissionid} )
+        </foreach>
+    </insert>
+    
+    <delete id="deleteRolePermissions">
+        delete from role_permission where roleid = #{roleid}
+    </delete>
+    
+    
+    <update id="update">
+    	update role set name = #{name} where id=#{id}
+    </update>
+    
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xzc.manager.dao.UserDAO" >
+
+	
+
+	<insert id="insertUserRoles">
+		insert into user_role (userid,roleid) values
+		<foreach collection="roleids" item="roleid" separator=",">
+			(#{userid},#{roleid})
+		</foreach>
+	</insert>
+	
+	<update id="deleteUserRoles">
+		delete from user_role where userid=#{userid} and roleid in
+		<foreach collection="roleids" item="roleid" open="(" close=")" separator=",">
+			#{roleid}
+		</foreach>
+	</update>
+	
+
+	<update id="update">
+		update  user set username=#{username},loginacct=#{loginacct},userpswd=#{userpswd},email=#{email},createtime=#{createtime}
+		where id=#{id} 
+	</update>
+
+
+
+	<select id="pageQueryData" resultType="com.xzc.common.bean.User">
+		select * from user 
+		<where>
+			<if test="queryText != null">
+				and loginacct like concat('%',#{queryText},'%')
+			</if>
+		</where>
+		 order by createtime desc
+		 limit #{start},#{size}
+	</select>
+	
+	<select id="pageQueryCount" resultType="int">
+		select count(*) from user
+		<where>
+			<if test="queryText != null">
+				and loginacct like concat('%',#{queryText},'%')
+			</if>
+		</where>
+		
+	</select>
+
+	<insert id="insert">
+		insert into user(
+			username,loginacct,userpswd,email,createtime
+		)values(
+			#{loginacct},#{username},#{userpswd},#{email},#{createtime}
+		)
+	</insert>
+
+	<delete id="delete">
+		delete from user where id=#{id}
+	</delete>
+	<delete id="deleteUsers">
+		delete from user where id in
+		<foreach collection="userids" item="userid" open="(" close=")" separator=",">
+			#{userid}
+		</foreach>
+	</delete>
+
+</mapper>
