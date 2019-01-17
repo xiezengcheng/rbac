@@ -45,7 +45,7 @@
     <servlet-name>dispatcher</servlet-name>
     <url-pattern>/</url-pattern>
   </servlet-mapping>
-  <listener>
-    <listener-class>com.xzc.web.ServerStartupListener</listener-class>
-  </listener>
+  
+ 
+  
 </web-app>
