@@ -42,7 +42,7 @@ public class PermissionInterceptor implements HandlerInterceptor {
 		List<Permission> permissions = permissionService.queryAll();
 		Set<String> uriSet = new HashSet<String>();	
 		for (Permission permission : permissions) {
-			if(permission.getUrl() != null && !permission.getUrl().equals("")) {
+			if(permission.getUrl() != null && !"".equals(permission.getUrl())) {
 				uriSet.add(path+permission.getUrl());
 			}
 		}

@@ -63,6 +63,8 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
 			<div class="tree">
+			<!-- <jsp:include />  如果有java代码则最好使用动态包含 -->
+				<!-- 静态包含 不会生成独立的字节码文件 -->
 				<%@include file="/WEB-INF/jsp/common/menu.jsp"%>
 			</div>
         </div>
