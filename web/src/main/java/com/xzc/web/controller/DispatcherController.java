@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.xzc.common.bean.AJAXResult;
 import com.xzc.common.bean.Permission;
 import com.xzc.common.bean.User;
+import com.xzc.common.utils.MD5Util;
 import com.xzc.manager.service.PermissionService;
 import com.xzc.manager.service.UserService;
 
@@ -60,6 +61,7 @@ public class DispatcherController {
 	@RequestMapping("/doAJAXLogin")
 	public Object doAJAXLogin(User user,HttpSession session) {
 		AJAXResult result = new AJAXResult();
+		user.setUserpswd(MD5Util.digest(user.getUserpswd()));
 		//实体类获取表单数据
 		User dbUser = userService.query4Login(user);
 		if(dbUser!=null) {
