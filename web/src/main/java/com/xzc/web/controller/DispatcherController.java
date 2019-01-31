@@ -9,6 +9,12 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +26,8 @@ import com.xzc.common.bean.User;
 import com.xzc.common.utils.MD5Util;
 import com.xzc.manager.service.PermissionService;
 import com.xzc.manager.service.UserService;
+import com.xzc.web.shiro.DynamicPermission;
+import com.xzc.web.shiro.MyShrioFilterFactoryBean;
 
 @Controller
 public class DispatcherController {
@@ -28,10 +36,17 @@ public class DispatcherController {
 	private UserService userService;
 	@Resource
 	private PermissionService permissionService;
+	@Autowired
+	MyShrioFilterFactoryBean shiroFilterFactoryBean;
 	
 	@RequestMapping("/login")
 	public String login() {
 		return "login";
+	}
+	
+	@RequestMapping("/error")
+	public String error() {
+		return "error";
 	}
 	
 	
@@ -100,6 +115,52 @@ public class DispatcherController {
 		}
 		return result;
 	}
+	@ResponseBody
+	@RequestMapping("/doAJAXLogin2")
+	public Object doAJAXLogin2(User user,HttpSession session) {
+		AJAXResult result = new AJAXResult();
+		Subject currentUser = SecurityUtils.getSubject();
+		
+		if(currentUser != null && currentUser.isAuthenticated() == false) {
+			
+			UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginacct(),user.getUserpswd());
+			try {
+				currentUser.login(token);				
+				User dbUser = userService.queryLogin(user.getLoginacct());
+				session.setAttribute("loginUser",dbUser);
+				//获取用户权限信息
+//				List<Permission> permissions = permissionService.queryPermissionsByUser(dbUser);
+				List<Permission> permissions = permissionService.queryAll();
+				Permission root = null;
+				Map<Integer,Permission> permissionMap = new HashMap<Integer,Permission>();
+				Set<String> uriSet = new HashSet<String>();
+				
+				for (Permission permission : permissions) {
+					permissionMap.put(permission.getId(),permission);
+					if(permission.getUrl()!=null&&!"".equals(permission.getUrl())) {
+						uriSet.add(session.getServletContext().getContextPath()+permission.getUrl());
+					}
+					
+				}
+				session.setAttribute("authUriSet", uriSet);
+				for (Permission permission : permissions) {
+					Permission child = permission;
+					if(child.getPid()==0) {
+						root = permission;
+					}else {
+						Permission parent = permissionMap.get(child.getPid());
+						parent.getChildren().add(child);	
+					}
+					
+				}
+				session.setAttribute("rootPermission",root);
+				result.setSuccess(true);
+			}catch(AuthenticationException e) {
+				result.setSuccess(false);
+			}			
+		}	
+		return result;
+	}
 	
 	
 	@RequestMapping("/main")
@@ -107,13 +168,13 @@ public class DispatcherController {
 		return "main";
 	}
 	
-	@RequestMapping("/logout")
-	public String logout(HttpSession session) {
-		//session.removeAttribute("loginUser");
-		//删除所有session数据
-		session.invalidate();
-		return "redirect:login";
-	}
+//	@RequestMapping("/logout")
+//	public String logout(HttpSession session) {
+//		//session.removeAttribute("loginUser");
+//		//删除所有session数据
+//		session.invalidate();
+//		return "redirect:login";
+//	}
 	
 	
 	

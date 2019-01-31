@@ -1,5 +1,6 @@
 package com.xzc.manager.dao;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,8 @@ public interface UserDAO {
 
 	@Select("select * from user where loginacct=#{user.loginacct} and userpswd=#{user.userpswd}")
 	User query4Login(@Param("user")User user);
+	@Select("select * from user where loginacct=#{loginacct}")
+	User queryLogin(String loginacct);
 
 	List<User> pageQueryData(Map<String, Object> map);
 
@@ -40,6 +43,9 @@ public interface UserDAO {
 	void deleteUserRoles(Map<String, Object> paramMap);
 	@Select("select roleid from user_role where userid=#{id}")
 	List<Integer> queryRoleidsByUserid(Integer id);
+
+	@Select("select name from role where id in(select roleid from user_role where userid = #{id})")
+	Collection<String> queryRolesByUserid(Integer id);
 
 
 }

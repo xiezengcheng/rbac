@@ -1,7 +1,9 @@
 package com.xzc.manager.service.serviceImpl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -68,6 +70,18 @@ public class UserServiceImpl implements UserService {
 
 	public List<Integer> queryRoleidsByUserid(Integer id) {
 		return userDAO.queryRoleidsByUserid(id);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.xzc.manager.service.UserService#queryLogin(java.lang.String)
+	 */
+	public User queryLogin(String loginacct) {
+		// TODO Auto-generated method stub
+		return userDAO.queryLogin(loginacct);
+	}
+
+	public Collection<String> queryRolesByUserid(Integer id) {
+		return userDAO.queryRolesByUserid(id);
 	}
 	
 }

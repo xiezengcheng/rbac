@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	    http://www.springframework.org/schema/aop
+    http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 缓存 -->
+	<bean id="cacheManager"
+		class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile"
+			value="classpath:ehcache.xml"></property>
+	</bean>
+
+	<!-- 定义Shiro安全管理配置 -->
+	<bean id="securityManager"
+		class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="shiroRealm" />
+		<property name="cacheManager" ref="cacheManager" />
+	</bean>
+	<bean id="shiroRealm" class="com.xzc.web.shiro.ShiroRealm">
+		<property name="credentialsMatcher">
+			<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+				<property name="hashAlgorithmName" value="MD5"></property>
+				<property name="hashIterations" value="1024"></property>
+
+			</bean>
+		</property>
+	</bean>
+	
+	<aop:config proxy-target-class="true"></aop:config>
+
+	<bean id="lifecycleBeanPostProcessor"
+		class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+	<!-- AOP式方法级权限检查 -->
+
+ 	<bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager" />
+	</bean> 
+	
+	
+	    <!-- 安全认证过滤器 -->
+    <bean id="shiroFilter" class="com.xzc.web.shiro.MyShrioFilterFactoryBean">
+        <property name="securityManager" ref="securityManager" />
+        <property name="loginUrl" value="/login" />
+        <property name="successUrl" value="/main" />
+        <property name="unauthorizedUrl" value="/error"/><!-- 
+        <property name="filters">
+          <map>
+            	<entry key="myUserFilter" value-ref="myUserFilter" />
+      	  </map>
+        </property> -->
+        <property name="filterChainDefinitions">
+            <value>
+				/login = anon
+				/doAJAXLogin2 = anon
+				/doAJAXLogin = anon
+				/index.jsp = anon
+				/css/** = anon    
+				/fonts/** = anon   
+				/img/** = anon    
+				/jquery/** = anon   
+				/layer/** = anon   
+				/script/** = anon 
+				/ztree/** = anon 
+				/bootstrap/** = anon
+				/logout = logout
+			<!-- 	/** = myUserFilter   -->    
+				/** = authc               
+			</value>
+        </property>
+    </bean>
+<!-- 	<bean id="myUserFilter" class="com.xzc.web.shiro.MyUserFilter"></bean> -->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.apache.shiro.authz.UnauthorizedException">redirect:/error</prop>
+			</props>
+		</property>
+	</bean>
+
+
+
+</beans>

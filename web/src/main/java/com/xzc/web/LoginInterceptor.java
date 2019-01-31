@@ -33,6 +33,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 		//判断当前用户是否已经登录
 		HttpSession session = request.getSession();
 		User loginUser = (User) session.getAttribute("loginUser");
+		System.out.println(loginUser);
 		if(loginUser == null) {
 			String path = session.getServletContext().getContextPath();
 			response.sendRedirect(path+"/login");

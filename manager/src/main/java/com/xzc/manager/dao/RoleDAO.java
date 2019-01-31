@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import com.xzc.common.bean.Relationship;
 import com.xzc.common.bean.Role;
 
 public interface RoleDAO {
@@ -34,5 +35,8 @@ public interface RoleDAO {
 	List<Role> checkRole(Role role);
 
 	void update(Role role);
+
+	@Select("select * from role_permission")
+	List<Relationship> getAllRelationship();
 
 }

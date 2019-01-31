@@ -86,7 +86,7 @@
       	var loadingIndex = null;
       	$.ajax({
       	  type:"post",
-      	  url: "doAJAXLogin",
+      	  url: "doAJAXLogin2",
       	  data: {
       		  "loginacct":loginacct,
       		  "userpswd":userpswd

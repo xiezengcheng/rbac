@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Select;
 
+import com.xzc.common.bean.Relationship;
 import com.xzc.common.bean.Role;
 
 
@@ -28,6 +29,8 @@ public interface RoleService {
 	List<Role> checkRole(Role role);
 
 	void update(Role role);
+
+	List<Relationship> getAllRelationship();
 
 
 }

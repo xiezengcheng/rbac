@@ -1,5 +1,7 @@
 <%@page pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %> 
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+
 <ul style="padding-left:0px;" class="list-group">
     <c:forEach items="${rootPermission.children}" var="permission">
         <c:if test="${empty permission.children}">
@@ -12,9 +14,11 @@
 				<span><i class="${permission.icon}"></i> ${permission.name} <span class="badge" style="float:right">${permission.children.size()}</span></span> 
 				<ul style="margin-top:10px;display:none;">
 					<c:forEach items="${permission.children}" var="child">
+        <shiro:hasPermission name="${child.url}">
 					<li style="height:30px;">
 						<a href="${APP_PATH}${child.url}"><i class="${child.icon}"></i> ${child.name}</a> 
 					</li>
+		</shiro:hasPermission>
 					</c:forEach>
 				</ul>
 			</li>

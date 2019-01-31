@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -204,6 +204,7 @@ public class UserController {
 	 * 用户首页
 	 * @return
 	 */
+	@RequiresPermissions("user/index")
 	@RequestMapping("/index1")
 	public String index1(@RequestParam(required=false,defaultValue="1")Integer pageno,@RequestParam(required=false,defaultValue="5")Integer pagesize,Model model) {
 		
@@ -226,6 +227,7 @@ public class UserController {
 		model.addAttribute("totalno", totalno);
 		return "user/index";
 	}
+	@RequiresPermissions("user/index")
 	@RequestMapping("/index")
 	public String index() {
 		return "user/index";

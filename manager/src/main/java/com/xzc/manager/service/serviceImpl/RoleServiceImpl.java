@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.xzc.common.bean.Relationship;
 import com.xzc.common.bean.Role;
 import com.xzc.manager.dao.RoleDAO;
 import com.xzc.manager.service.RoleService;
@@ -58,5 +59,11 @@ public class RoleServiceImpl implements RoleService {
 	public void update(Role role) {
 		roleDAO.update(role);
 	}
+
+	public List<Relationship> getAllRelationship() {
+		// TODO Auto-generated method stub
+		return roleDAO.getAllRelationship();
+	}
+
 
 }

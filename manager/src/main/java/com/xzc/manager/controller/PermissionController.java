@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import com.xzc.manager.service.PermissionService;
 
 @Controller
 @RequestMapping("/permission")
+
 public class PermissionController {
 
 	@Resource
@@ -78,6 +80,7 @@ public class PermissionController {
 		return "permission/edit";
 	}
 
+	@RequiresPermissions("permission/index")
 	@RequestMapping("/index")
 	public String index() {
 		return "permission/index";

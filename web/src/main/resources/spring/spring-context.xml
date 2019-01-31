@@ -68,5 +68,6 @@
     </bean>
     <!--开启使用注解事务-->
     <tx:annotation-driven transaction-manager="transactionManager"/>
+	<import resource="spring-context-shrio.xml"/>
 
 </beans>
